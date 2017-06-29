@@ -1,4 +1,5 @@
 # general-purpose-matlab
+This repository hosts a handful of generic matlab functions as well as the associated example scripts and documentation.
 
 ## coordtransform
 - **1D/changescale** converts a matrix of data from one set of limits to another
