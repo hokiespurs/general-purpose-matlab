@@ -37,7 +37,7 @@ elseif nargin==2
     dname ='.';
 end
 
-if ~iscell(name)
+if ~iscell(name) %only searching for one name flag
     foundfiles = dir([dname '/' name]);
     dnames = {foundfiles.folder};
     fnames = {foundfiles.name};
@@ -45,7 +45,7 @@ if ~iscell(name)
     % remove '.' and '..' relative paths
     badinds = strcmp(fnames,{'.'}) | strcmp(fnames,{'..'});
     
-    % get all files at this layer
+    %% get all files at this layer
     fileroot = dnames(~isfolder & ~badinds);
     filenames = fnames(~isfolder & ~badinds);
     
@@ -56,7 +56,7 @@ if ~iscell(name)
         levelfilenames{i} = [fileroot{i} '\' filenames{i}];
     end
     
-    % get all folders at this layer
+    %% get all folders at this layer
     folderroot = dnames(isfolder & ~badinds);
     foldernames = fnames(isfolder & ~badinds); % in this case, file == folder
     
@@ -65,21 +65,24 @@ if ~iscell(name)
     for i=1:nfolders
         levelfoldernames{i} = [folderroot{i} '\' foldernames{i}];
     end
-    % dig
+    
+    %% dig through any folders
     alldigfilenames = {};
     alldigfoldernames = {};
     if diglayer>0
-        for i=1:nfolders
-%             fprintf('%s\n',levelfoldernames{i});
+        [~,anyfolders]=dirname('*',0,dname);
+        nAnyFolders = numel(anyfolders);
+        for i=1:nAnyFolders
+%             fprintf('%s\n',anyfolders{i});
             [digfilenames,digfoldernames] = ...
-                dirname(name,diglayer-1,levelfoldernames{i});
+                dirname(name,diglayer-1,[dname '/' anyfolders{i}]);
             alldigfilenames = [alldigfilenames; digfilenames];
             alldigfoldernames = [alldigfoldernames; digfoldernames];
         end
         filenames = [levelfilenames; alldigfilenames];
         foldernames = [levelfoldernames; alldigfoldernames];
-    end
-else
+    end 
+else %search for multiple string flags
     filenames = {};
     foldernames = {};
     for i=1:numel(name)
