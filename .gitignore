@@ -1,0 +1,9 @@
+## MATLAB
+*.asv
+*.mat
+
+## LATEX (TEXSTUDIO)
+*.gz
+*.log
+*.aux
+*.out

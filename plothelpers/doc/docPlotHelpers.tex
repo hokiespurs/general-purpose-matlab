@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}          % change font encoding to T1
+\usepackage{lmodern}  %better for visual on screen
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{dirtree}
+
+\makeatletter
+\renewcommand*\env@matrix[1][\arraystretch]{%
+	\edef\arraystretch{#1}%
+	\hskip -\arraycolsep
+	\let\@ifnextchar\new@ifnextchar
+	\array{*\c@MaxMatrixCols c}}
+\makeatother
+
+% Used for adding Matlab Algorithms
+\RequirePackage{listings}
+\RequirePackage[framed,numbered]{matlab-prettifier}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+
+\begin{document}
+	\section{plothelpers.m}
+	\subsection{Motivation/Concept}
+	These functions are used so that it is easier to make plots.  The following functions are included:
+	\subsubsection{axgrid.m}
+	This function helps generate a grid of subplots with more explicit control on their spacing.
+	\subsubsection{bigcolorbar.m}
+	This function helps generate a standalone colorbar wherever you want.
+	\subsubsection{bigcolorbarax.m}
+	This function helps generate a standalone colorbar which aligns with a set axes handles input to the function.
+	\subsubsection{bigtitle.m}
+	This function helps generate a standalone title anywhere on the screen.
+	\subsubsection{bigtitleax.m}
+	This function helps generate a standalone title which aligns itself centered above a given set of axes handles.
+	\subsubsection{fixfigstring.m}
+	This function replaces an underscore in a string with so that it prints appropriately.
+	\subsection{linkax.m}
+	This function allows you to link any(unlike linkaxes) axes property between different axes.
+	\subsubsection{maxpos.m}
+	This function returns the position bounds of an array of axes. It is used by \textit{bigcolorbarax.m} and \textit{bigtitleax.m}.
+	\clearpage
+	\subsection*{Example Usage (\textit{examplePlotHelpers.m})}
+	This example demonstrates many of the functions in plotHelpers.
+	\lstinputlisting[
+	label      = {alg:lsr2},
+	style      = Matlab-editor,
+	basicstyle = \mlttfamily,
+	firstline  = 1,
+	]{../exampleplothelpers.m}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height = 4in]{exampleplothelpers}
+	\end{figure}
+\end{document}
