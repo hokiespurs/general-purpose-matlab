@@ -36,6 +36,7 @@ This repository hosts a handful of generic matlab functions as well as the assoc
 - **loopstatus** prints some info to the screen estimating a loops finish time
 - **makefunctionh1** makes it easy to make the header comment block for a function
 - **v2vars** is a lazy way to break a matrix into multiple variables
+- **mddir** makes an ascii formatted folder directory tree suitable for markdown 
 
 ## Visualization
 - **colorbarangle** makes a circular colorbar to depict angles
