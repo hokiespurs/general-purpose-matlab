@@ -75,18 +75,19 @@ if ~iscell(name) %only searching for one name flag
         for i=1:nAnyFolders
 %             fprintf('%s\n',anyfolders{i});
             [digfilenames,digfoldernames] = ...
-                dirname(name,diglayer-1,[dname '/' anyfolders{i}]);
-            alldigfilenames = [alldigfilenames; digfilenames];
-            alldigfoldernames = [alldigfoldernames; digfoldernames];
+                dirname(name,diglayer-1,[anyfolders{i}]);
+            alldigfilenames = [alldigfilenames(:); digfilenames(:)];
+            alldigfoldernames = [alldigfoldernames(:); digfoldernames(:)];
         end
-        filenames = [levelfilenames; alldigfilenames];
-        foldernames = [levelfoldernames; alldigfoldernames];
-    end 
+    end
+    filenames = [levelfilenames; alldigfilenames];
+    foldernames = [levelfoldernames; alldigfoldernames];
+    
 else %search for multiple string flags
     filenames = {};
     foldernames = {};
     for i=1:numel(name)
-        [ifilenames,ifoldernames] = dirname2(name{i},diglayer,dname);
+        [ifilenames,ifoldernames] = dirname(name{i},diglayer,dname);
         filenames = [filenames;ifilenames];
         foldernames = [foldernames;ifoldernames];
     end
