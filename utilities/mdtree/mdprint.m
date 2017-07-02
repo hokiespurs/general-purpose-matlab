@@ -1,42 +1,36 @@
-function mddir
-% MDDIR generates ascii directory tree suitable for markdown
-%   This function prints an ascii directory tree to the screen for the
-%   current working directory.  It helps with documenting folder and file
-%   structures.
-%
-%   * Inspired by mddir (https://www.npmjs.com/package/mddir)
+function mdprint(f,d,name)
+% MDPRINT Prints files and directories in an ascii tree structure
+%   Used by mddir and mdstruct to print an ascii tree format of data to the
+%   screen.  
 % 
 % Inputs:
-%   - n/a 
+%   - f    : File name as a structure
+%   - d    : Directory name as a structure
+%   - name : Name of the first level of the directory tree
 % 
 % Outputs:
 %   - n/a 
 % 
 % Examples:
-%   mddir
+%   - n/a
 % 
 % Dependencies:
-%   - dirname.m
+%   - n/a
 % 
 % Toolboxes Required:
 %   - n/a
 % 
 % Author        : Richie Slocum
 % Email         : richie@cormorantanalytics.com
-% Date Created  : 01-Jul-2017
-% Date Modified : 01-Jul-2017
+% Date Created  : 02-Jul-2017
+% Date Modified : 02-Jul-2017
 
 %% Constants to format the output
 STR1      = '|   ';
 STRFOLDER = '|-- ';
 STRFILE   = '|-- ';
 STR3      = '    ';
-%% Get all the data
-% first column is the relative file path
-[f,d] = dirname('*',65535);
-f = cellfun(@(x) x(numel(pwd)+1:end),f,'UniformOutput',false);
-d = cellfun(@(x) x(numel(pwd)+1:end),d,'UniformOutput',false);
-
+%%
 % It was a pain to make it print subfolders before files, so I wrote a not
 % so elequent way of making it work.  Every directory gets an 'a' character
 % in front of it, every filename gets a 'z' in front of it.  Then when it
@@ -47,7 +41,6 @@ f = strrep(f,'\','\a');
 d = strrep(d,'\','\a');
 
 f = cellfun(@(x) addLetterToName(x,'z'),f,'UniformOutput',false);
-
 
 % second column indicates the layer it is at
 f(:,2) = cellfun(@(x) sum(x==filesep),f,'UniformOutput',false);
@@ -60,10 +53,8 @@ d(:,3)={1};
 % sort it alphabetically
 fd = sortrows([f;d]);
 
-[~,topfolder,~] = fileparts(pwd);    % get top folder name
-
 %% Print it all to the screen
-fprintf('%s%s\n',STRFOLDER,topfolder);
+fprintf('%s%s\n',STRFOLDER,name);
 
 for i=1:size(fd,1)
     [~,printname,ext] = fileparts(fd{i,1});
