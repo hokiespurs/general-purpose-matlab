@@ -37,6 +37,7 @@ This repository hosts a handful of generic matlab functions as well as the assoc
 - **makefunctionh1** makes it easy to make the header comment block for a function
 - **v2vars** is a lazy way to break a matrix into multiple variables
 - **mddir** makes an ascii formatted folder directory tree suitable for markdown 
+- **mdstruct** makes an ascii formatted tree of a structure suitable for markdown 
 
 ## Visualization
 - **colorbarangle** makes a circular colorbar to depict angles
