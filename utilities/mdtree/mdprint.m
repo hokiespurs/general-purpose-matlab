@@ -80,10 +80,10 @@ Yfix(isnan(Yfix))=0;
 Yfix(Y==1)=2;
 %% Print it all to the screen
 fprintf('%s%s\n',STRFOLDER,name);
-
 for i=1:nentry
     [~,printname,ext] = fileparts(fd{i,1});
     printname = printname(2:end); %rid of either 'a' or 'z' used for sort
+    fprintf('%s',STR0);
     for j=1:maxdepth
         switch Yfix(i,j) %nothing for -1
             case 0
