@@ -26,10 +26,10 @@ function mdprint(f,d,name)
 % Date Modified : 02-Jul-2017
 
 %% Constants to format the output
+STR0      = '    ';
 STR1      = '|   ';
 STRFOLDER = '|-- ';
 STRFILE   = '|-- ';
-STR3      = '    ';
 %%
 % It was a pain to make it print subfolders before files, so I wrote a not
 % so elequent way of making it work.  Every directory gets an 'a' character
@@ -53,18 +53,50 @@ d(:,3)={1};
 % sort it alphabetically
 fd = sortrows([f;d]);
 
+%% Run a filter to determine when to draw the vertical bars
+% For example 
+% |-- a
+% |-- |-- b
+% |--     |-- c
+% |-- d
+%     |-- e
+nentry = size(fd,1);
+maxdepth = max(cellfun(@(x) x,fd(:,2)));
+Y = zeros(nentry,maxdepth);
+for i=1:nentry
+    Y(i,fd{i,2}:end)=nan;
+    Y(i,fd{i,2}) = 1;
+end
+% interpolate along y dimension across nans;
+indval = 1:nentry;
+Yfix = Y;
+for i=1:maxdepth
+    yval = Y(:,i);
+    induse = yval~=0;
+    Yfix(:,i) = interp1(indval(induse),yval(induse),indval);
+end
+Yfix(isnan(Y))=-1;
+Yfix(isnan(Yfix))=0;
+Yfix(Y==1)=2;
 %% Print it all to the screen
 fprintf('%s%s\n',STRFOLDER,name);
 
-for i=1:size(fd,1)
+for i=1:nentry
     [~,printname,ext] = fileparts(fd{i,1});
-    printname = printname(2:end);
-    fprintf('%s',STR3);
-    fprintf('%s',repmat(STR1,1,fd{i,2}-1));
-    if fd{i,3}==1
-        fprintf('%s',STRFOLDER);
-    else
-        fprintf('%s',STRFILE);
+    printname = printname(2:end); %rid of either 'a' or 'z' used for sort
+    for j=1:maxdepth
+        switch Yfix(i,j) %nothing for -1
+            case 0
+                fprintf('%s',STR0);
+            case 1
+                fprintf('%s',STR1);
+            case 2
+                if fd{i,3}==1
+                    fprintf('%s',STRFOLDER);
+                else
+                    fprintf('%s',STRFILE);
+                end
+        end
     end
     fprintf('%s\n',[printname ext]);
 end
