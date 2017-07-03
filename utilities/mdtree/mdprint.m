@@ -37,10 +37,10 @@ STRFILE   = '|-- ';
 % sorts it works out.  Before it prints it to the screen, it wipes the
 % prefix letter.
 
-f = strrep(f,'\','\a');
-d = strrep(d,'\','\a');
+f = strrep(f,'\','\z');
+d = strrep(d,'\','\z');
 
-f = cellfun(@(x) addLetterToName(x,'z'),f,'UniformOutput',false);
+f = cellfun(@(x) addLetterToName(x,'a'),f,'UniformOutput',false);
 
 % second column indicates the layer it is at
 f(:,2) = cellfun(@(x) sum(x==filesep),f,'UniformOutput',false);
