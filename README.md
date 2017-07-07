@@ -1,6 +1,30 @@
 # general-purpose-matlab
 This repository hosts a handful of generic matlab functions as well as the associated example scripts and documentation.
 
+## Directory Tree
+The following folder structure is currently used
+```
+|-- general-purpose-matlab
+    |-- coordtransform
+    |-- gridding
+    |-- ischecks
+    |-- leastSquares
+    |-- plothelpers
+    |-- statistics
+    |-- utilities
+    |-- visualization
+```
+|            Name |          Description |
+|----------------:|----------------------|
+|  coordtransform |   Coordinate Transformations |
+|        gridding |   Gridding and Interpolating |
+|        ischecks |   Logical Checks |
+|    leastSquares |   Least Squares Regression |
+|     plothelpers |   Functions to make plotting easier |
+|      statistics |   Statistics computation and tests |
+|       utilities |   Non-Specific functions with a large scope |
+|   visualization |   Functions which help visualize types of data |
+
 ## coordtransform
 - **1D/changescale** converts a matrix of data from one set of limits to another
 - **1D/num2ind** converts a matrix of data to indices given a set of limits and number of indices
