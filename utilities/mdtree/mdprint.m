@@ -75,7 +75,11 @@ Yfix = Y;
 for i=1:maxdepth
     yval = Y(:,i);
     induse = yval~=0;
-    Yfix(:,i) = interp1(indval(induse),yval(induse),indval);
+    if sum(induse)<=1
+        Yfix(~induse,i)=nan;
+    else
+        Yfix(:,i) = interp1(indval(induse),yval(induse),indval);
+    end
 end
 Yfix(isnan(Y))=-1;
 Yfix(isnan(Yfix))=0;
