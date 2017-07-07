@@ -13,7 +13,6 @@ function mdstruct(X,name)
 % Examples:
 %   X.a = 'test';
 %   X.b = 1;
-%   
 % 
 % Dependencies:
 %   - mdprint.m

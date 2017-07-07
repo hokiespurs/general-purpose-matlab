@@ -1,7 +1,7 @@
 function mdprint(f,d,name)
 % MDPRINT Prints files and directories in an ascii tree structure
 %   Used by mddir and mdstruct to print an ascii tree format of data to the
-%   screen.  
+%   screen in markdown format. Also prints an ascii table.
 % 
 % Inputs:
 %   - f    : File name as a structure
@@ -23,7 +23,7 @@ function mdprint(f,d,name)
 % Author        : Richie Slocum
 % Email         : richie@cormorantanalytics.com
 % Date Created  : 02-Jul-2017
-% Date Modified : 02-Jul-2017
+% Date Modified : 07-Jul-2017
 
 %% Constants to format the output
 STR0      = '    ';
@@ -39,9 +39,11 @@ STRFILE   = '|-- ';
 
 f = strrep(f,'\','\z');
 d = strrep(d,'\','\z');
-
-f = cellfun(@(x) addLetterToName(x,'a'),f,'UniformOutput',false);
-
+if ~isempty(f)
+    f = cellfun(@(x) addLetterToName(x,'a'),f,'UniformOutput',false);
+else
+    f=cell(0,3);
+end
 % second column indicates the layer it is at
 f(:,2) = cellfun(@(x) sum(x==filesep),f,'UniformOutput',false);
 d(:,2) = cellfun(@(x) sum(x==filesep),d,'UniformOutput',false);
@@ -78,11 +80,15 @@ end
 Yfix(isnan(Y))=-1;
 Yfix(isnan(Yfix))=0;
 Yfix(Y==1)=2;
-%% Print it all to the screen
+%% Print it all to the screen as a Tree
+fprintf('```\n');
 fprintf('%s%s\n',STRFOLDER,name);
+maxstrlen = 0;
+allprintname = cell(nentry,1);
 for i=1:nentry
     [~,printname,ext] = fileparts(fd{i,1});
-    printname = printname(2:end); %rid of either 'a' or 'z' used for sort
+    maxstrlen = max(numel([printname ext]),maxstrlen);
+    allprintname{i} = [printname(2:end) ext]; %rid of either 'a' or 'z' used for sort
     fprintf('%s',STR0);
     for j=1:maxdepth
         switch Yfix(i,j) %nothing for -1
@@ -98,9 +104,19 @@ for i=1:nentry
                 end
         end
     end
-    fprintf('%s\n',[printname ext]);
+    fprintf('%s\n',allprintname{i});
 end
-
+fprintf('```\n');
+%% Print it to the screen as a Table
+fprintf('| %*s | %*s |\n',maxstrlen,'Name',20,'Description');
+fprintf('|%s:|%s|\n',repmat('-',1,maxstrlen+1),repmat('-',1,20+2));
+for i=1:nentry
+    if fd{i,3}==1
+        fprintf('| %*s | %*s |\n',maxstrlen,allprintname{i},20,'Folder Description');
+    else
+        fprintf('| %*s | %*s |\n',maxstrlen,allprintname{i},20,'File Description');
+    end
+end
 end
 
 function newstr = addLetterToName(oldstr,letter)
