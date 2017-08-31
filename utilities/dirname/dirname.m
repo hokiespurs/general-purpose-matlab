@@ -30,11 +30,25 @@ function [filenames,foldernames] = dirname(name,diglayer,dname)
 % Date Modified : 22-Jun-2017
 % Github        : https://github.com/hokiespurs/general-purpose-matlab
 
+isnamefullpath = any(ismember(name,'\') | ismember(name,'/'));
+
 if nargin==1
     diglayer = 0;
-    dname ='.';
+    if isnamefullpath
+        [a,b,c]=fileparts(name);
+        name = [b c];
+        dname = a;
+    else
+        dname ='.';
+    end
 elseif nargin==2
-    dname ='.';
+    if isnamefullpath
+        [a,b,c]=fileparts(name);
+        name = [b c];
+        dname = a;
+    else
+        dname ='.';
+    end
 end
 
 if ~iscell(name) %only searching for one name flag
