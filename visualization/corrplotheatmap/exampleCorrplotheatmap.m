@@ -13,11 +13,11 @@ figure(1);clf
 corrplotheatmap(X,'strlabel',names);
 %% Test with different colormap
 figure(2);clf
-cmap = flipud(hot(1000));
+cmap = flipud(jet(1000));
 cmap = cmap(200:800,:);
 falloff2white = flipud([linspace(cmap(1,1),1,20)'...
     linspace(cmap(1,2),1,20)' linspace(cmap(1,3),1,20)']);
 cmap = [falloff2white;cmap];
-corrplotheatmap(X,'strlabel',names,'cmap',cmap);
+corrplotheatmap(X,'strlabel',names,'cmap',cmap,'npoly',[0 1 2 1;1 0 2 1;2 2 0 1;1 1 1 0]);
 
 end

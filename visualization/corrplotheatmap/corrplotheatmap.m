@@ -15,7 +15,8 @@ function [hax,hplots] = corrplotheatmap(X,varargin)
 %   - 'r2fontsize' : Fontsize for the r2 correlation
 %   - 'pos'        : [dr,dc,x1,y1,x2,y2] position of axes
 %   - 'cmap'       : colormap to use
-%
+%   - 'mapsize'    : size of 2d to reshape data to
+% 
 % Outputs:
 %   - hax    : handle for each of the axes
 %   - hplots : handle for each of the plots
@@ -59,6 +60,7 @@ defaultr2fontsize = 12;
 defaultpos = [0.025,0.025,0.1,0.9,0.1,0.85];
 dcmap = flipud(hot(350));
 defaultcmap = dcmap(1:256,:);
+defaultmapsize = [];
 
 % check functions
 checkX = @(x) size(X,2)>1;
@@ -70,6 +72,7 @@ checkFontsize = @(x) isnumeric(x) && x>0 && isscalar(x) && mod(x,1)==0;
 checkR2fontsize = @(x) isnumeric(x) && x>0 && isscalar(x) && mod(x,1)==0;
 checkpos = @(x) isvector(x) && numel(x)==6;
 checkcmap = @(x) size(x,2)==3 && isnumeric(x);
+checkmapsize = @(x) numel(x)==2;
 
 % parse inputs
 p = inputParser;
@@ -82,6 +85,7 @@ addParameter(p,'fontsize'  ,defaultFontsize   ,checkFontsize);
 addParameter(p,'r2fontsize',defaultr2fontsize ,checkR2fontsize);
 addParameter(p,'pos'       ,defaultpos        ,checkpos);
 addParameter(p,'cmap'      ,defaultcmap       ,checkcmap);
+addParameter(p,'mapsize'   ,defaultmapsize    ,checkmapsize);
 
 parse(p,X,varargin{:});
 
@@ -94,6 +98,7 @@ fontsize   = p.Results.fontsize;
 r2fontsize = p.Results.r2fontsize;
 pos        = p.Results.pos;
 cmap       = p.Results.cmap;
+mapsize    = p.Results.mapsize; %use this for upper diagonal to be a map
 
 % make lims
 xg = cell(nvars,1);
