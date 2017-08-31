@@ -29,7 +29,7 @@ function [betacoef,V,J,CovB,So2,modelinfo] = lsr(x,y,modelfun,varargin)
 %   - 'betaCoef0Cov'    : Covariance of beta0 coefficient values
 %   - 'JacobianYB'      : Function @(b,x) for Jacobian wrt betacoef
 %   - 'JacobianYX'      : Function @(b,x) for Jacobian wrt x
-%   - 'scaleCov'         : boolean (default:0) to scale covariance matrix 
+%   - 'scaleCov'        : boolean (default:1) to scale covariance matrix 
 %   - 'chi2alpha'       : Alpha values for significance 
 %   - 'RobustWgtFun'    : Robust Weight Function
 %   - 'Tune'            : Robust Weight Tuning Function
@@ -477,7 +477,7 @@ function [betacoef,V,J,CovB,So2,ErrorModelInfo] = lsrnlin(x,y,modelfun,betaCoef0
     end
     if istls
         if ~isempty(betacoef0cov)
-            covX = blkdiag(Sx,betacoefcov);
+            covX = blkdiag(Sx,betacoef0cov);
         else
             covX = Sx;
         end
@@ -782,7 +782,7 @@ function isLinear = isModelLinear(modelfun,betacoef,x,h)
 % note, hessian is not shaped correctly, this just looks for any slope so
 % its ok
 %check for each point
-h = 1;
+h = 1; % big jump helped to determine nonlinearity
 for i=1:size(x,1)
     Jfun = @(bn)(modelfun(bn,x(i,:)));
     J = @(b) (calcPartials(Jfun,b,h));
