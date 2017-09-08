@@ -47,17 +47,21 @@ if nargin==3
     nskip = 1; %default to output every loop
 end
 
-if mod(curLoopNum,nskip)==0
-    t = now - startTime; %time it took for the first nLoops
-    avgLoopTime = t/(curLoopNum); 
-    loopsRemaining = nLoops-curLoopNum;
-    
-    estimTime = avgLoopTime*loopsRemaining; 
+if nskip==0
+   nskip=1; % mod(n,0) = n ...this wont work
+end
 
+if mod(curLoopNum,nskip)==0
+    elapsedTime = now - startTime; %time it took for the first nLoops
+    percentDone = curLoopNum/nLoops;
+    
+    estimTotalTime = elapsedTime/percentDone; 
+    estimTime = estimTotalTime - elapsedTime;
     estimDatenum = datestr(now + estimTime);
     
-    fprintf('%6.0f/%.0f \t Now: %s \t Expected: %s \t Remaining: %s\n',...
-        curLoopNum,nLoops,datestr(now),estimDatenum, ...
+    ndigits = ceil(log10(nLoops))+1;
+    fprintf('%*.0f/%*.0f \t Now: %s \t Expected: %s \t Remaining: %s\n',...
+        ndigits,curLoopNum,ndigits,nLoops,datestr(now),estimDatenum, ...
         datestr(estimTime,'dd:HH:MM:SS'));
 end
 
