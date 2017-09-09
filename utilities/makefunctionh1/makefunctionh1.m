@@ -26,6 +26,7 @@ function makefunctionh1(mfile,userInputs,savetofile,optParts)
 %        (14)Email
 %        (15)Date Created
 %        (16)Date Modified
+%        (17)Github Repository
 %
 % Outputs:
 %   - n/a
@@ -49,13 +50,13 @@ function makefunctionh1(mfile,userInputs,savetofile,optParts)
 if nargin == 1
     userInputs=0;
     savetofile=0;
-    optParts=ones(1,16);
+    optParts=ones(1,17);
     optParts([3 4 6 7 12])=0;
 elseif nargin == 2
     savetofile=0;
-    optParts=ones(1,16);
+    optParts=ones(1,17);
 elseif nargin == 3
-    optParts=ones(1,16);
+    optParts=ones(1,17);
 elseif nargin>4
     error('Too Many Inputs');
 end
@@ -87,7 +88,7 @@ uInputs{13} = 'Richie Slocum';
 uInputs{14} = 'richie@cormorantanalytics.com';
 uInputs{15} = datestr(now,'dd-mmm-yyyy');
 uInputs{16} = datestr(now,'dd-mmm-yyyy');
-
+uInputs{17} = '';
 %% If prompt inputs, run through use inputs
 if userInputs
     if optParts(1)  , uInputs(1)            = getShortDescrip(fname); end
@@ -104,6 +105,7 @@ if userInputs
     if optParts(14) , uInputs(14)           = getEmail(fname);        end
     if optParts(15) , uInputs(15)           = getDateCreated(fname);  end
     if optParts(16) , uInputs(16)           = getDateModified(fname); end
+    if optParts(17) , uInputs(17)           = getGithub(fname);       end
 end
 if optParts(10) || optParts(11)
     [fListNames,pListNames] = getDependencies(mfile);
@@ -132,6 +134,7 @@ if optParts(13)  ,H = [H addAuthor(uInputs{13})];                       end
 if optParts(14)  ,H = [H addEmail(uInputs{14})];                        end
 if optParts(15)  ,H = [H addDateCreated(uInputs{15})];                  end
 if optParts(16)  ,H = [H addDateModified(uInputs{16})];                 end
+if optParts(16)  ,H = [H addGithub(uInputs{17})];                       end
 
 if savetofile
     saveHeaderToFile(mfile,H);
@@ -290,6 +293,11 @@ catch
 end
 end
 
+function H = addGithub(uInput)
+%%
+H = [cc(1) 'Github        : ' uInput '\n'];
+
+end
 %% Getters
 function uInput = getShortDescrip(fname)
 %%
@@ -422,7 +430,16 @@ if isempty(uInput)
     uInput={''};
 end
 end
-
+function uInput = getGithub(fname)
+%%
+prompt = ['Github : '];
+dlgTitle = fname;
+sz = [1 40];
+uInput = inputdlg(prompt,dlgTitle,sz);
+if isempty(uInput)
+    uInput={''};
+end
+end
 function uInput = getDateCreated(fname)
 %%
 prompt = ['Input Date Created: '];
