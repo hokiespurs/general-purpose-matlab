@@ -183,35 +183,41 @@ end
 fprintf('\n%% Parser Values\n');
 fprintf('p = inputParser;\n');
 %required
-fprintf('%% Required \n');
-maxrequiredstrlen = max(cellfun(@numel,args(flag==1)));
-for i=1:numel(args)
-    if flag(i)==1
-        fprintf('addRequired(p, %-*s, %-*s);\n',...
-            maxrequiredstrlen+3,['''' args{i} ''''],...
-            maxrequiredstrlen+7,['check_' args{i}])
+if any(flag==1)
+    fprintf('%% Required Arguments\n');
+    maxrequiredstrlen = max(cellfun(@numel,args(flag==1)));
+    for i=1:numel(args)
+        if flag(i)==1
+            fprintf('addRequired(p, %-*s, %-*s);\n',...
+                maxrequiredstrlen+3,['''' args{i} ''''],...
+                maxrequiredstrlen+7,['check_' args{i}])
+        end
     end
 end
 %optional
-fprintf('%% Optional \n');
-maxrequiredstrlen = max(cellfun(@numel,args(flag==2)));
-for i=1:numel(args)
-    if flag(i)==2
-        fprintf('addOptional(p, %-*s, %-*s, %-*s);\n',...
-            maxrequiredstrlen+3,['''' args{i} ''''],...
-            maxrequiredstrlen+8,['default_' args{i}],...
-            maxrequiredstrlen+7,['check_' args{i}])
+if any(flag==2)
+    fprintf('%% Optional Arguments\n');
+    maxrequiredstrlen = max(cellfun(@numel,args(flag==2)));
+    for i=1:numel(args)
+        if flag(i)==2
+            fprintf('addOptional(p, %-*s, %-*s, %-*s);\n',...
+                maxrequiredstrlen+3,['''' args{i} ''''],...
+                maxrequiredstrlen+8,['default_' args{i}],...
+                maxrequiredstrlen+7,['check_' args{i}])
+        end
     end
 end
 %parameter
-fprintf('%% Parameter \n');
-maxrequiredstrlen = max(cellfun(@numel,args(flag==3)));
-for i=1:numel(args)
-    if flag(i)==3
-        fprintf('addParameter(p, %-*s, %-*s, %-*s);\n',...
-            maxrequiredstrlen+3,['''' args{i} ''''],...
-            maxrequiredstrlen+8,['default_' args{i}],...
-            maxrequiredstrlen+7,['check_' args{i}])
+if any(flag==3)
+    fprintf('%% Parameter Arguments\n');
+    maxrequiredstrlen = max(cellfun(@numel,args(flag==3)));
+    for i=1:numel(args)
+        if flag(i)==3
+            fprintf('addParameter(p, %-*s, %-*s, %-*s);\n',...
+                maxrequiredstrlen+3,['''' args{i} ''''],...
+                maxrequiredstrlen+8,['default_' args{i}],...
+                maxrequiredstrlen+7,['check_' args{i}])
+        end
     end
 end
 %% parse 
