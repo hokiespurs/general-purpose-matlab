@@ -19,7 +19,8 @@ function inputParserTemplate(args,flag,defaultvals)
 % Examples:
 %     args = {'reqA','reqB','optC','paramD','paramE'};
 %     flag = [1 1 2 3 3];
-%     inputParserTemplate(args,flag)
+%     defaultvals = {'a',1,'b','c',10}
+%     inputParserTemplate(args,flag,defaultvals)
 %
 % Dependencies:
 %   - n/a
