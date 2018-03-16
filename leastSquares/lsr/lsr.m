@@ -742,7 +742,7 @@ for iTestBeta=1:100 %loop and test different nBetacoef and see what works
         % maybe I shouldnt have tried to force linear into this function
     end
 end
-if nBetacoef ==100
+if nBetacoef == 1000
     error('Unable to determine the number of beta coefficients');
 end
 end
