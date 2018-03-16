@@ -1,8 +1,6 @@
 function tseconds = secondsofweek(tdatenum)
 %% Compute the time in seconds from start of week
-tsecondsOfDay = hour(tdatenum)*60*60 ...
-              + minute(tdatenum)*60 ...
-              + second(tdatenum);
+tsecondsOfDay = (tdatenum-floor(tdatenum))*24*60*60;
           
 dayofweek = weekday(tdatenum) - 1; % 0 = sunday, 6 = saturday
 
