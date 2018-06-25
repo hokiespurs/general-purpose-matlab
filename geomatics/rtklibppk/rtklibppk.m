@@ -32,7 +32,7 @@ function rtklibppk(rtklibbin,rinexRover,rinexBase,navfile,baseLatLonHt,baseDatum
 
 outname    = 'ppkproc.pos';
 
-syscmd = [rtklibbin ' -p 2 -c -l ' sprintf('%.9f ',baseLatLonHt)];
+syscmd = [rtklibbin ' -p 2 -t -c -l ' sprintf('%.9f ',baseLatLonHt)];
 syscmd = [syscmd '-o ' outdir '/' outname ' '];
 
 syscmd = [syscmd '"' rinexRover '" '];
