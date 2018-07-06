@@ -1519,7 +1519,72 @@ methods (Access=public)
         
     end
     
+    function write_las_2(obj, filename, majorversion, minorversion, pointformat)
+        newheader = obj.header;
+        oldheader = obj.header;
+        if ~exist('filename','var')
+            error('Please input target filename.')
+        end
+        if exist('majorvarsion','var')
+            newheader.version_major = majorversion;
+        end
+        if exist('minorversion','var')
+            newheader.version_minor = minorversion;
+        end
+        if exist('pointformat','var')
+            newheader.point_data_format = pointformat;
+        end
+        newheader.number_of_point_records = length(obj.x);
+        newheader.max_x = max(obj.x);
+        newheader.min_x = min(obj.x);
+        newheader.max_y = max(obj.y);
+        newheader.min_y = min(obj.y);
+        newheader.max_z = max(obj.z);
+        newheader.min_z = min(obj.z);
+        newheader.filename = filename;
 
+        fid = fopen(filename,'w');        
+        try 
+            obj.header = newheader;
+            obj.writeheader(fid);
+        catch err
+            obj.header = oldheader;
+            error(['Error writing las header: ' err.getReport]);
+        end
+        
+        %find offset to point data and write it to header in file
+        tmppos = ftell(fid);
+        obj.header.offset_to_point_data = tmppos;
+        fseek(fid,96,-1);
+        fwrite(fid,uint32(tmppos),'uint32');
+        fseek(fid,tmppos,-1);        
+        
+        %calculate point record length and write it to header in file
+        record_lengths = [20 28 26 34 57 63 30 36 38 59 67 ];
+        obj.header.point_data_record_length = ...
+            record_lengths(obj.header.point_data_format+1) + size(obj.extradata,2);
+        fseek(fid,105,-1);
+        fwrite(fid,obj.header.point_data_record_length,'uint16');
+     
+        fclose(fid);
+        
+        try 
+            obj.write_xyz();
+            if ~isempty(obj.write_intensity)
+                obj.write_intensity();
+            end
+            if ~isempty(obj.red)
+                obj.write_color();
+            end
+            if ~isempty(obj.gps_time)
+                obj.write_gps_time();
+            end
+        catch err
+            error(['Error writing point data: ' err.getReport]);
+        end
+        obj.header = oldheader; 
+    end
+    
     function add_waveform_packet_desc(obj,bits,compression,numberofsamples,samplespacing,gain,offset)
         obj.header.number_of_variable_records = obj.header.number_of_variable_records + 1;
         idx = obj.header.number_of_variable_records;

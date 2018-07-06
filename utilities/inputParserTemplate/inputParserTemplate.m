@@ -141,7 +141,7 @@ fprintf('%% MYFUNCTION Short summary of this function goes here\n');
 fprintf('%%   Detailed explanation goes here\n%%\n');
 
 % inputs
-fprintf('%% Required Inputs: (default)\n');
+fprintf('%% Required Inputs: \n');
 for i=1:nargs
     if flag(i)==1
         fprintf('%%\t- %-*s : *description* \n',maxstrlen+2,['' args{i} '']);
@@ -162,7 +162,7 @@ for i=1:nargs
 end
 
 %% blank remainder of h1 header block
-fprintf('\n');
+fprintf('%% \n');
 fprintf('%% Outputs:\n');
 fprintf('%%   - [enter any outputs here] \n');
 fprintf('%% \n');

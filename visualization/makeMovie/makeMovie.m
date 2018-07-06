@@ -10,7 +10,7 @@ function makeMovie(filenames,savename,Hz,duplicate)
 %
 % 
 % Inputs:
-%   - filenames : Cell array of image paths and name
+%   - filenames : Cell array of image paths and name OR {} uint8 image data
 %   - savename  : filename of output movie ('avi' or 'gif')
 %   - Hz        : Hz of output video
 %   - duplicate : Slows video down by repeating frames
@@ -64,9 +64,13 @@ try
 for i=1:numel(filenames)
     fprintf('%.0f/%.0f...%s\n',i,numel(filenames),datestr(now));
     
-    [I,~,alpha]=imread(filenames{i});
-    I(repmat(alpha==0,1,1,3)) = 255;
-
+    if ischar(class(filenames{i}))
+        [I,~,alpha]=imread(filenames{i});
+        I(repmat(alpha==0,1,1,3)) = 255;
+    else
+        I = filenames{i};
+    end
+    
     frame.cdata=I;frame.colormap=[];
     for j=1:duplicate
         writeVideo(writerObj,frame);
@@ -87,8 +91,14 @@ I=imread(filenames{1});
 imwrite(A,map,outputfilename,'gif','LoopCount',Inf,'DelayTime',delaytime);
 for i=2:numel(filenames)
     fprintf('%.0f/%.0f...%s\n',i,numel(filenames),datestr(now));
-    [I,~,alpha]=imread(filenames{i});
-    I(repmat(alpha==0,1,1,3)) = 255;
+    
+    if ischar(class(filenames{i}))
+        [I,~,alpha]=imread(filenames{i});
+        I(repmat(alpha==0,1,1,3)) = 255;
+    else
+        I = filenames{i};
+    end
+    
     [A,map]=rgb2ind(I,256);
     for j=1:duplicate
         imwrite(A,map,outputfilename,'gif','WriteMode','append','DelayTime',delaytime);
