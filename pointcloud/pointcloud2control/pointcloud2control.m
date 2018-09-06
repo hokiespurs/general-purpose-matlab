@@ -1,6 +1,7 @@
 function stats = pointcloud2control(xyzPointcloud, xyzControl, normalRadius, varargin)
 % POINTCLOUD2CONTROL Compares pointcloud to control using modified M3C2
-%   Detailed explanation goes here
+%   A positive value indicates xyzPointcloud is above xyz Control when the
+%   surface normal is straight up
 % 
 % Required Inputs:
 %	- xyzPointcloud   : (Mx3) pointcloud 
@@ -11,7 +12,8 @@ function stats = pointcloud2control(xyzPointcloud, xyzControl, normalRadius, var
 %	- 'maxDist'       : (inf) maximum distance to include in stats
 %   - 'makenormalZ'   : (false) makes the normal default to Z up
 %   - 'histVals'      : (-1:0.02:1) histogram bin edges
-
+%   - 'dodebug'       : (inf) how often to print update to screen
+%
 % Outputs:
 %   - stats : struture with statistics for each control point
 % 
@@ -31,7 +33,7 @@ function stats = pointcloud2control(xyzPointcloud, xyzControl, normalRadius, var
 % Github        : https://github.com/hokiespurs/general-purpose-matlab\pointcloud\pointcloud2control
 
 %% Parse Inputs
-[xyzPointcloud,xyzControl,normalRadius,evalRadius,maxDist,makeNormalZ,histVals] = ...
+[xyzPointcloud,xyzControl,normalRadius,evalRadius,maxDist,makeNormalZ,histVals,dodebug] = ...
     parseInputs(xyzPointcloud,xyzControl,normalRadius,varargin{:});
 
 nControlPoints = size(xyzControl,1);
@@ -44,7 +46,9 @@ if ~makeNormalZ
     for iPointNum = 1:nControlPoints
         controlNormal(iPointNum,:) = ...
             calcNormal(xyzControl(iPointNum,:),xyzPointcloud,normalRadius);
-        loopStatus(starttime,iPointNum,nControlPoints,25);
+        if dodebug
+            loopStatus(starttime,iPointNum,nControlPoints,25);
+        end
     end
 else
     controlNormal = repmat([0 0 1],nControlPoints,1);
@@ -52,20 +56,24 @@ end
 
 %% Compute stats on points within cylinder
 starttime = now;
-fprintf('Computing Stats\n');
 for iPointNum = 1:nControlPoints
     stats(iPointNum) = calcStats(xyzControl(iPointNum,:),...
         controlNormal(iPointNum,:),xyzPointcloud,evalRadius,maxDist,histVals);
-    loopStatus(starttime,iPointNum,nControlPoints,25);
+    loopStatus(starttime,iPointNum,nControlPoints,dodebug);
 end
 
 end
 
 function stats = calcStats(xyzControlPoint,N,xyzPointcloud,evalRadius,maxDist,histvals)
-    [dDownline,dOffline] = point_to_line(xyzPointcloud, N, xyzControlPoint);
+    if all(N==[0 0 1]) %faster when only considering z
+        dXY = xyzPointcloud(:,1:2)-xyzControlPoint(:,1:2);
+        dOffline = sqrt(sum(dXY.^2,2));
+        dDownline = xyzPointcloud-xyzControlPoint;
+    else
+        [dDownline,dOffline] = point_to_line(xyzPointcloud, N, xyzControlPoint);
+    end
+    indGood = abs(dDownline)<=maxDist & dOffline<=evalRadius;
 
-    indGood = dDownline<=maxDist & dOffline<=evalRadius;
-    
     %%
     if sum(indGood)~=0
         stats.mean = mean(dDownline(indGood));
@@ -211,7 +219,7 @@ Nraw = [-X(1) -X(2) 1];
 N = Nraw./sqrt(sum(Nraw.^2));
 end
 
-function [xyzPointcloud,xyzControl,normalRadius,evalRadius,maxDist,makeNormalZ,histVals] = ...
+function [xyzPointcloud,xyzControl,normalRadius,evalRadius,maxDist,makeNormalZ,histVals,dodebug] = ...
     parseInputs(xyzPointcloud,xyzControl,normalRadius,varargin)
 %%	 Call this function to parse the inputs
 
@@ -220,7 +228,8 @@ default_evalRadius  = normalRadius;
 default_maxDist     = inf;
 default_makeNormalZ = false;
 default_histVals    = -1:0.02:1;
-    
+default_dodebug     = inf;
+
 % Check Values
 check_xyzPointcloud  = @(x) size(x,2)==3;
 check_xyzControl     = @(x) size(x,2)==3;
@@ -229,6 +238,7 @@ check_evalRadius     = @(x) isscalar(x);
 check_maxDist        = @(x) isscalar(x);
 check_makeNormalZ    = @(x) islogical(x);
 check_histVals       = @(x) isvector(x);
+check_dodebug        = @(x) mod(x,1)==0;
 
 % Parser Values
 p = inputParser;
@@ -241,6 +251,7 @@ addParameter(p, 'evalRadius'  , default_evalRadius  , check_evalRadius  );
 addParameter(p, 'maxDist'     , default_maxDist     , check_maxDist     );
 addParameter(p, 'makeNormalZ' , default_makeNormalZ , check_makeNormalZ );
 addParameter(p, 'histVals'    , default_histVals    , check_histVals    );
+addParameter(p, 'dodebug'     , default_dodebug     , check_dodebug     );
 
 % Parse
 parse(p,xyzPointcloud,xyzControl,normalRadius,varargin{:});
@@ -252,4 +263,5 @@ evalRadius    = p.Results.('evalRadius');
 maxDist       = p.Results.('maxDist');
 makeNormalZ   = p.Results.('makeNormalZ');
 histVals      = p.Results.('histVals');
+dodebug       = p.Results.('dodebug');
 end

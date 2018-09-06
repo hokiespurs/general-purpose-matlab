@@ -15,6 +15,8 @@ CMAP = [ 60  99 137;
         219 115  63;
         176 182 183]./255;
     
+%     CMAP = lines(17);
+    
 %% Get Pointcloud LAS Names
 allpointcloudnames = dirname(POINTCLOUDDIR);
 
@@ -59,13 +61,62 @@ end
 
 %% Compare things
 STRNAMES = unique(controlClass);
+% STRNAMES = STRNAMES([1 2 3 5 6]) 
+varbals = [];
+barvals.mean.val = nan(numel(STRNAMES),numel(allpointcloudnames));
+barvals.median.val = nan(numel(STRNAMES),numel(allpointcloudnames));
+barvals.std.val = nan(numel(STRNAMES),numel(allpointcloudnames));
+barvals.npts.val = nan(numel(STRNAMES),numel(allpointcloudnames));
 
 for i=1:numel(STRNAMES)
     strname = STRNAMES{i};
     ind = strcmp(controlClass,strname);
-    istats = stats(ind);
-    
+    for j=1:numel(allpointcloudnames)
+        istats = stats{j}(ind);
+        
+        barvals.mean.val(i,j)   = nanmean([istats.mean]);
+        barvals.median.val(i,j) = nanmean([istats.median]);
+        barvals.std.val(i,j)    = nanmean([istats.std]);
+        barvals.npts.val(i,j)   = nanmean([istats.npts]);
+        
+        barvals.mean.std(i,j)   = nanstd([istats.mean]);
+        barvals.median.std(i,j) = nanstd([istats.median]);
+        barvals.std.std(i,j)    = nanstd([istats.std]);
+        barvals.npts.std(i,j)   = nanstd([istats.npts]);      
+    end
 end
+grouplabels = fixfigstring(STRNAMES);
+legendlabels = fixfigstring({'Aerial lidar','SfM Ungridded','SfM Gridded (5cm Median Binning)','Terrestrial lidar'});
+
+%% Make Plots
+f=figure(1);clf
+baruncertainty(barvals.mean.val*100,barvals.mean.std*100,CMAP,legendlabels,grouplabels)
+legend(legendlabels,'fontsize',16,'interpreter','latex','location','northwest');
+xticklabels(grouplabels);
+xtickangle(90);
+
+title('Mean','fontsize',24,'interpreter','latex');
+ylabel('Mean Bias (cm)','fontsize',16,'interpreter','latex');
+% saveas(f,'Mean.png');
+
+f=figure(2);clf
+baruncertainty(barvals.std.val*100,barvals.std.std*100,CMAP,legendlabels,grouplabels)
+legend(legendlabels,'fontsize',16,'interpreter','latex','location','northwest');
+xticklabels(grouplabels);
+xtickangle(90);
+title('Standard Deviation','fontsize',24,'interpreter','latex');
+ylabel('Standard Deviation (cm)','fontsize',16,'interpreter','latex');
+% saveas(f,'Std.png');
+
+f=figure(3);clf
+baruncertainty(barvals.npts.val,barvals.npts.std,CMAP,legendlabels,grouplabels)
+legend(legendlabels,'fontsize',16,'interpreter','latex','location','northwest');
+xticklabels(grouplabels);
+xtickangle(90);
+
+title('Number of Points','fontsize',24,'interpreter','latex');
+ylabel('Number of Points','fontsize',16,'interpreter','latex');
+% saveas(f,'Npts.png');
 
 %% %% Debug
 % DEBUGLIM = 2;

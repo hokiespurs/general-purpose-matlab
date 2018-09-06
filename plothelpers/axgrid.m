@@ -129,7 +129,10 @@ if ~iswithin(c,[1 sz(1)]) || ~iswithin(r,[1 sz(2)])
     error('Desired axes location out of range(%.0f,%.0f)',sz);
 end
 % determine limits of axes
-xyxy = [xpos(c(:)); ypos(r(:)); xpos(c(:))+dxpos; ypos(r(:))+dypos]';
+X = reshape(xpos(c(:)),1,numel(c));
+Y = reshape(ypos(r(:)),1,numel(r));
+xyxy = [X; Y; X+dxpos; Y+dypos]';
+
 minX = min([xyxy(:,1); xyxy(:,3)]);
 maxX = max([xyxy(:,1); xyxy(:,3)]);
 minY = min([xyxy(:,2); xyxy(:,4)]);
