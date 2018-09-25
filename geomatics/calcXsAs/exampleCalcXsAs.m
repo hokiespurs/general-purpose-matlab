@@ -29,3 +29,14 @@ plot([0 0],[0 1],'g.-')
 
 axis equal
 grid on
+
+%% test inverse calcXsAs
+pt = [11, 2];
+AsAz = 45;
+
+x = 16;
+y = 31;
+
+[Xs,As]=calcXsAs(x,y,pt,AsAz);
+
+[x2,y2]=calcXsAs(Xs,As,pt,AsAz,true)
