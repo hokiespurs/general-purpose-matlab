@@ -1,4 +1,4 @@
-function profileinds = extractProfile(xyStart,xyDirection,offlinethresh,downlinethresh,xy)
+function [profileinds, downlineoffline]= extractProfile(xyStart,xyDirection,offlinethresh,downlinethresh,xy)
 %% Extract proile from xyz data using a 2d line
 DODEBUG = false;
 %% Input Checks
@@ -48,6 +48,8 @@ profileinds = downlineoffline(1,:) > offlinethresh(1)  & ...
               downlineoffline(2,:) > downlinethresh(1) & ...
               downlineoffline(2,:) < downlinethresh(2);
 
+downlineoffline = downlineoffline(:,profileinds)';
+          
 %% DEBUG
 if DODEBUG
     xyEndRotated = R * xyEnd(:) - xyStartRotated;
