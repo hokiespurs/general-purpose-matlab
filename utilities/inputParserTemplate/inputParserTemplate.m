@@ -78,7 +78,7 @@ if numel(flag)~=numel(args)
     error('must be one flag for each argument')
 end
 
-if sum(any(flag(:)' == [1 2 3]'))~=numel(args)
+if sum(any(repmat(flag(:)',3,1) == repmat([1 2 3]',1,numel(flag))))~=numel(args)
     error('flag values can only be 1,2, or 3');
 end
 
@@ -89,7 +89,7 @@ if isempty(defaultvals)
       tempdefaultvals{i}='0'; 
    end
 else
-   noptional = sum(any(flag(:)'==[2 3]'));
+   noptional = sum(any(repmat(flag(:)',2,1) == repmat([2 3]',1,numel(flag))));
    tempdefaultvals = cell(noptional,1);
    for i=1:noptional
        %try to convert the default value to a double
@@ -103,7 +103,7 @@ else
    end
 end
 alldefault = cell(numel(args),1);
-alldefault(any(flag(:)'==[2 3]'),1)=tempdefaultvals;
+alldefault(any(repmat(flag(:)',2,1) == repmat([2 3]',1,numel(flag))),1)=tempdefaultvals;
 
 end
 
