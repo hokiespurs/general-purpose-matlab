@@ -78,8 +78,12 @@ if (nxtile*nytile)>100 && ~OVERRIDE
    error('easy there partner, thats a lot of data'); 
 end
 %
+icount = 0;
+ntotal = numel(xtilemin:xtilemax)*numel(ytilebottom:ytiletop);
+starttime = now;
 for ix = xtilemin:xtilemax
     for iy = ytilebottom:ytiletop
+        icount=icount+1;
         xind = (1:IMSIZE)+(ix-xtilemin)*IMSIZE;
         yind = (1:IMSIZE)+(iy-ytilebottom)*IMSIZE;
         if strcmp(SERVERORDER,'ZYX')
@@ -89,7 +93,7 @@ for ix = xtilemin:xtilemax
         else
             error('SERVER ORDER NOT DEFINED YET');
         end
-        if DODEBUG
+        if DODEBUG==1
             figure(101);clf
             imagesc(lonvector,latvector,Iortho);set(gca,'ydir','normal')
             axis equal
@@ -99,6 +103,8 @@ for ix = xtilemin:xtilemax
             plot([lon(1) lon(1) lon(2) lon(2) lon(1)],...
                  [lat(1) lat(2) lat(2) lat(1) lat(1)],'r-');
              drawnow
+        elseif DODEBUG==2
+            loopStatus(starttime,icount,ntotal,1);
         end
     end
 end
@@ -187,8 +193,7 @@ if strcmp(servername,'esriworld')
     serverext   = '.png';
     serverorder = 'ZYX';
     imsize      = 256;
-% Not sure why this wont work
-    % elseif strcmp(servername,'openstreetmap')
+% elseif strcmp(servername,'openstreetmap')
 %     server      = 'https://a.tile.openstreetmap.org';
 %     serverext   = '.png';
 %     serverorder = 'ZXY';
