@@ -3,5 +3,5 @@ function [Evector,Nvector,Zg] = getTerraUtm(E,N,zone,z,varargin)
 [Evector,Nvector,Iortho] = getWMSutm(E,N,zone,z,'servername','terra',varargin{:});
 
 Zg = (double(Iortho(:,:,1)) * 256 + double(Iortho(:,:,2)) + double(Iortho(:,:,3)) / 256) - 32768;
-
+Zg(Zg==-32768)=nan;
 end

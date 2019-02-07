@@ -1,10 +1,14 @@
 function [latvector,lonvector,Iortho] = getWMSll(lat,lon,z,varargin)
-% GETWMSLL Short summary of this function goes here
-%   Detailed explanation goes here
+% GETWMSLL Downloads WMS map tiles into one basemap image
+%   Use this function to download a basemap tiles from a WMS server for the
+%   input lat,lon files at a given zoom(z) level.  
 %
+%   * There may be legal issues with downloading WMS tiles for offline use
+%   * I only use this for making a quick basemaps to plot other data on
+%   
 % Required Inputs: 
-%	- lat           : [min_lat max_lat] latitude bounding limits
-%	- lon           : [min_lon max_lon] longitude bounding limits
+%	- lat           : vector of latitudes to plot
+%	- lon           : vector of longitudes to plot
 %	- z             : WMS Zoom level  
 %               1 = 150,000   m 
 %               7 =   1,222   m 
@@ -14,33 +18,35 @@ function [latvector,lonvector,Iortho] = getWMSll(lat,lon,z,varargin)
 %              19 =       0.3 m 
 %
 % Optional Inputs: (default)
-%	- 'server'      : (0) *description* 
-%	- 'serverext'   : (0) *description* 
-%	- 'serverorder' : (0) *description* 
-%	- 'dodebug'     : (0) *description* 
-%	- 'imsize'      : (0) *description* 
-%	- 'override'    : (0) *description* 
-%   - 'servername'  : (0) *description*
+%	- 'server'      : (<arcgis>)  Web address to the WMS server 
+%	- 'serverext'   : ('.png')    Image file extension 
+%	- 'serverorder' : ('ZYX')     Folder order 
+%	- 'dodebug'     : (false)     Whether to show debug info 
+%	- 'imsize'      : (256)       Image size in pixels
+%	- 'override'    : (false)     Force download thousands of files
+%   - 'servername'  : (esriworld) Server name
 %
 % Outputs:
-%	- 'latvector'   : (0) *description* 
-%	- 'lonvector'   : (0) *description* 
-%	- 'Iortho'      : (0) *description* 
+%	- 'latvector'   : Image latitude vector 
+%	- 'lonvector'   : Image longitude vector
+%	- 'Iortho'      : Ortho 
 % 
 % Examples:
-%   - [enter any example code here]
-% 
+%   [latvector,lonvector,Iortho] = getWMSll([44.55 44.57],[-123.29 -123.27],16,'dodebug',true);
+%   imagesc(lonvector,latvector,Iortho);
+%   set(gca,'ydir','normal');
+%
 % Dependencies:
-%   - [unknown]
+%   - none
 % 
 % Toolboxes Required:
-%   - [unknown]
+%   - none
 % 
 % Author        : Richie Slocum
 % Email         : richie@cormorantanalytics.com
 % Date Created  : 26-Dec-2018
-% Date Modified : 26-Dec-2018
-% Github        : [enter github web address]
+% Date Modified : 6-Feb-2019
+% Github        : https://github.com/hokiespurs/general-purpose-matlab
 
 %% Function Call
 [lat,lon,z,SERVER,SERVEREXT,SERVERORDER,DODEBUG,IMSIZE,OVERRIDE,SERVERNAME] = parseInputs(lat,lon,z,varargin{:});
@@ -75,7 +81,7 @@ latvector = latmin + ((1:IMSIZE*nytile)-1) * dlat/256;
 lonvector = lonmin + ((1:IMSIZE*nxtile)-1) * dlon/256;
 
 if (nxtile*nytile)>100 && ~OVERRIDE
-   error('easy there partner, thats a lot of data'); 
+   error('Whoa! Easy there partner, thats a lot of data youre trying to download. Set "override" = true if youre really sure.'); 
 end
 %
 icount = 0;

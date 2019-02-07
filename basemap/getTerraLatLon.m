@@ -1,4 +1,6 @@
 function [latvector,lonvector,Zg] = getTerraLatLon(lat,lon,z,varargin)
+%% Grab and parse the mapzen terrain tiles and convert to DTM
+%
 % (red * 256 + green + blue / 256) - 32768
 % terrazen elevation
 [latvector,lonvector,Iortho] = getWMSll(lat,lon,z,'servername','terra',varargin{:});
