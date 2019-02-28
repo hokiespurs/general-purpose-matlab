@@ -1,4 +1,4 @@
-function [h,zg] = heatmapscat(x,y,xgi,ygi,doprobability,doplot)
+function [h,zg] = heatmapscat(x,y,xgi,ygi,doprobability,doplot,dolog10)
 % HEATMAPSCAT generates a 2d heatmap of x,y data
 %   heatmapscat is used as an alternative to plotting 2d data points when
 %   there is very dense data and the trend is hard to discern due to there
@@ -45,12 +45,16 @@ function [h,zg] = heatmapscat(x,y,xgi,ygi,doprobability,doplot)
 % Date Modified : 21-Jun-2017  
 % Github        : https://github.com/hokiespurs/general-purpose-matlab
 
-narginchk(4,6);
+narginchk(4,7);
 if nargin==4
     doprobability = false;
     doplot = true;
+    dolog10 = false;
 elseif nargin==5
     doplot = true;
+    dolog10 = false;
+else
+    dolog10 = false;
 end
 
 x = x(:);
@@ -80,7 +84,11 @@ if doprobability==1
 end
 %generate the plot of data using imagesc
 if doplot
-    h = imagesc(xgi,ygi,zg);
+    if ~dolog10
+        h = imagesc(xgi,ygi,zg);
+    else
+        h = imagesc(xgi,ygi,log10(zg));
+    end
     set(gca,'ydir','normal')
 else
     h = nan;
