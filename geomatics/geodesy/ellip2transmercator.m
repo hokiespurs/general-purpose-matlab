@@ -43,24 +43,24 @@ else
     M0 = B * EO;
 end
 
-Q = asinh(tand(lat)) - (e * atanh(e*sind(lat)));
+Q = asinh(tand(lat)) - (e .* atanh(e.*sind(lat)));
 Beta = atan(sinh(Q));
-n0 = atanh(cos(Beta)*sind(lon-lono));
-E0 = asin(sin(Beta)*cosh(n0));
+n0 = atanh(cos(Beta).*sind(lon-lono));
+E0 = asin(sin(Beta).*cosh(n0));
 
-E1 = h1 * sin(2*E0) * cosh(2*n0);
-E2 = h2 * sin(4*E0) * cosh(4*n0);
-E3 = h3 * sin(6*E0) * cosh(6*n0);
-E4 = h4 * sin(8*E0) * cosh(8*n0);
+E1 = h1 .* sin(2*E0) .* cosh(2*n0);
+E2 = h2 .* sin(4*E0) .* cosh(4*n0);
+E3 = h3 .* sin(6*E0) .* cosh(6*n0);
+E4 = h4 .* sin(8*E0) .* cosh(8*n0);
 E = E0+E1+E2+E3+E4;
 
-n1 = h1*cos(2*E0)*sinh(2*n0);
-n2 = h2*cos(4*E0)*sinh(4*n0);
-n3 = h3*cos(6*E0)*sinh(6*n0);
-n4 = h4*cos(8*E0)*sinh(8*n0);
+n1 = h1.*cos(2*E0).*sinh(2*n0);
+n2 = h2.*cos(4*E0).*sinh(4*n0);
+n3 = h3.*cos(6*E0).*sinh(6*n0);
+n4 = h4.*cos(8*E0).*sinh(8*n0);
 eta = n0 + n1 + n2 + n3 + n4;
 
-Easting = FE + ko * B * eta;
-Northing = FN + ko * (B*E-M0);
+Easting = FE + ko .* B .* eta;
+Northing = FN + ko .* (B.*E-M0);
 
 end

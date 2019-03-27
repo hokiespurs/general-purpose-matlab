@@ -17,21 +17,25 @@ e2 = Ellipdef.e2;
 e = sqrt(e2);
 
 %% Sub Computations
+m = cosd(lat)./sqrt(1-e2*sind(lat).^2);
 mo = cosd(lato)./sqrt(1-e2*sind(lato).^2);
 
-to = tand(45 - lato/2)./((1 - e*sind(lato))/(1+e*sind(lato))).^(e/2);
-t  = tand(45 - lat/2)./((1 - e*sind(lat))/(1+e*sind(lat))).^(e/2);
+to = tand(45 - lato/2)./((1 - e.*sind(lato))./(1+e.*sind(lato))).^(e/2);
+t  = tand(45 - lat/2)./((1 - e.*sind(lat))./(1+e.*sind(lat))).^(e/2);
 
 n = sind(lato);
 
 F  = mo./(n*to.^n);
 
-r  = a .* F .* t.^n * ko;
-ro = a .* F .* to.^n * ko;
+r  = a .* F .* t.^n .* ko;
+ro = a .* F .* to.^n .* ko;
 
 theta = n * (lon-lono);
 
 %% Final Computation
-E = EF + r * sind(theta);
-N = NF + ro - r * cosd(theta);
+E = EF + r .* sind(theta);
+N = NF + ro - r .* cosd(theta);
+
+k = (r .* n) ./ (a * m); % Scale Factor
+ca = (lon-lono).*n;       % Convergence Angle
 end

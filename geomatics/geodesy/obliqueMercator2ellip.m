@@ -1,4 +1,4 @@
-function [lat,lon]=obliqueMercator2ellip(Ellipdef,Projdef,E,N)
+function [lat,lon]=obliquemercator2ellip(Ellipdef,Projdef,E,N)
 % EPSG 9812
 %% Constants
 latc   = Projdef.latOrigin;

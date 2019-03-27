@@ -1,5 +1,6 @@
 function [lat,lon] = transmercator2ellip(Ellipdef,Projdef,E,N)
 % assume not at poles, need to implement USGS method if so
+THRESH = 1e-16;
 %%
 f = Ellipdef.f;
 a = Ellipdef.a;
@@ -48,33 +49,33 @@ else
     M0 = B * EO;
 end
 
-np =(E-FE)/(B*ko);
-Ep = ((N-FN)+ko*M0)/(B*ko);
+np =(E-FE)./(B.*ko);
+Ep = ((N-FN)+ko.*M0)./(B.*ko);
 
-E1p = h1p * sin(2*Ep) * cosh(2*np);
-E2p = h2p * sin(4*Ep) * cosh(4*np);
-E3p = h3p * sin(6*Ep) * cosh(6*np);
-E4p = h4p * sin(8*Ep) * cosh(8*np);
+E1p = h1p .* sin(2.*Ep) .* cosh(2*np);
+E2p = h2p .* sin(4.*Ep) .* cosh(4*np);
+E3p = h3p .* sin(6.*Ep) .* cosh(6*np);
+E4p = h4p .* sin(8.*Ep) .* cosh(8*np);
 E0p = Ep-(E1p+E2p+E3p+E4p);
 
-n1p = h1p*cos(2*Ep)*sinh(2*np);
-n2p = h2p*cos(4*Ep)*sinh(4*np);
-n3p = h3p*cos(6*Ep)*sinh(6*np);
-n4p = h4p*cos(8*Ep)*sinh(8*np);
+n1p = h1p.*cos(2.*Ep).*sinh(2.*np);
+n2p = h2p.*cos(4.*Ep).*sinh(4.*np);
+n3p = h3p.*cos(6.*Ep).*sinh(6.*np);
+n4p = h4p.*cos(8.*Ep).*sinh(8.*np);
 eta0p = np - (n1p + n2p + n3p + n4p);
 
-Bp = asin(sin(E0p)/cosh(eta0p));
+Bp = asin(sin(E0p)./cosh(eta0p));
 Qp = asinh(tan(Bp));
 Qpp0 = Qp;
 keeplooping = true;
 x=0;
 while (keeplooping)
-    Qpp = Qp + (e*atanh(e*tanh(Qpp0)));
-    keeplooping = any(abs(Qpp-Qpp0))>1e-16;
+    Qpp = Qp + (e.*atanh(e.*tanh(Qpp0)));
+    keeplooping = any(abs(Qpp-Qpp0))>THRESH;
     Qpp0 = Qpp;
     x = x+1;
 end
 lat = atand(sinh(Qpp));
-lon = lono + asind(tanh(eta0p)/cos(Bp));
+lon = lono + asind(tanh(eta0p)./cos(Bp));
 
 end

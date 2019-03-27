@@ -50,4 +50,11 @@ while(keeplooping)
 end
 
 lon = thetap/n+lonF;
+%% Scale Factor and Convergence Angle
+t  = tand(45 - lat/2)./((1 - e*sind(lat))/(1+e*sind(lat))).^(e/2);
+r  = a .* F .* t.^n;
+
+m = cosd(lat)./sqrt(1-e2*sind(lat).^2);
+k = (r .* n) ./ (a * m); % Scale Factor
+ca = (lon-lonF)*n;       % Convergence Angle
 end
