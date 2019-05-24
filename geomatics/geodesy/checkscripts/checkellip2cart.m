@@ -8,7 +8,7 @@ fprintf('\nTesting Ellipsoid to Cartesian Transformation \n\n');
 %% True values
 %NAD83 Ellipsoid
 Ellipdef.a  =  6378137;
-Ellipdef.f  = 1/298.257222101;
+Ellipdef.f  = 1/298.257222100882711243;
 Ellipdef.e2 = 2*Ellipdef.f-Ellipdef.f^2;
 
 % coordinates from OPUS report (Channel Islands, CA, 2019)
