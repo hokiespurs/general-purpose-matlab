@@ -64,12 +64,12 @@ switch Projdef.type
             Projdef.falseNorth = str2double(splitdat{24});
             type = 'lcc1sp';
         else
-            Projdef.falseLat   = str2double(splitdat{39});
-            Projdef.falseLon   = str2double(splitdat{27});
-            Projdef.LatSP1     = str2double(splitdat{30});
-            Projdef.LatSP2     = str2double(splitdat{33});
-            Projdef.falseEast  = str2double(splitdat{21});
-            Projdef.falseNorth = str2double(splitdat{24});
+            Projdef.falseLat   = str2double(splitdat{27});
+            Projdef.falseLon   = str2double(splitdat{30});
+            Projdef.LatSP1     = str2double(splitdat{21});
+            Projdef.LatSP2     = str2double(splitdat{24});
+            Projdef.falseEast  = str2double(splitdat{33});
+            Projdef.falseNorth = str2double(splitdat{36});
             type = 'lcc2sp';
         end
     case 'Hotine_Oblique_Mercator_Azimuth_Natural_Origin'

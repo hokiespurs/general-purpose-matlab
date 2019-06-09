@@ -34,7 +34,7 @@ function [lat,lon] = lcc2sp2ellip(Ellipdef,Projdef,E,N)
 
 %% Lambert Conic Conformal (2SP)
 % EPSG Dataset coordinate operation method code 9802
-
+THRESH = 1e-16;
 %% Values from structure into easier to read variables
 
 % Values from projection structure
@@ -65,10 +65,12 @@ F  = m1./(n*t1.^n);
 rf = a .* F .* tf.^n;
 
 rp = sqrt((E-EF).^2+(rf-(N-NF)).^2);
-if (rp<0 && n>0) || (rp>0 && n<0)
-    rp = rp * -1;
+if n>0 % rp same sign as n
+    rp(rp<0) = rp(rp<0) * -1;
+else
+    rp(rp>0) = rp(rp>0) * -1;
 end
-tp = (rp/(a*F))^(1/n);
+tp = (rp./(a.*F)).^(1./n);
 thetap = atan2d(E-EF,rf-(N-NF));
 
 
@@ -76,10 +78,10 @@ thetap = atan2d(E-EF,rf-(N-NF));
 lat0 = 90 - 2 * atand(tp);
 keeplooping = true;
 while(keeplooping)
-    lat = 90 - 2 * atand(tp*((1-e*sind(lat0))./(1+e*sind(lat0))).^(e/2));
+    lat = 90 - 2 .* atand(tp.*((1-e.*sind(lat0))./(1+e.*sind(lat0))).^(e./2));
     dlat = abs(lat-lat0);
     lat0=lat;
-    keeplooping = dlat>1e-16;
+    keeplooping = any(dlat(:)>THRESH);
 end
 
 lon = thetap/n+lonF;
