@@ -7,15 +7,15 @@ function [val,numpts]=roundgridfun(varargin)
 %   The grid nodes must be evenly spaced in each dimension.
 %
 %   The function works for ND datasets (tested up to 5D)
-% 
+%
 %   1D: [val,numpts]=roundgridfun(x,y,xg,@fun);           % Vector
 %   2D: [val,numpts]=roundgridfun(x,y,z,xg,yg,@fun);      % Surface
-%   3D: [val,numpts]=roundgridfun(x,y,z,I,xg,yg,zg,@fun); % Voxels   
+%   3D: [val,numpts]=roundgridfun(x,y,z,I,xg,yg,zg,@fun); % Voxels
 %
 %   The common input functions are @mean, @min, @max, @std, @var
 %   The function handle @(x) {x} can be used to return a cell array with
 %   all of the data in each grid node bin
-% 
+%
 % Inputs:
 %    - x : nx1 : vector of x values
 %    - y : nx1 : vector of y values
@@ -27,28 +27,28 @@ function [val,numpts]=roundgridfun(varargin)
 %    - fun: @function : handle to a function that
 %         *array can be a multidimensional array from meshgrid, but must just
 %          vary along one dimension
-% 
+%
 % Outputs:
 %   - val    : values returned from @fun, nan if no points at grid node
 %   - numpts : the number of points at each grid node
-% 
+%
 % Examples:
-%     %EXAMPLE 2D 
+%     %EXAMPLE 2D
 %     x = rand(1000,1)*10; y = rand(1000,1)*10; z = x.*y;
 %     xgi = 0:1:10; ygi = 0:1:10;
 %     [val,numpts]=roundgridfun(x,y,z,xgi,ygi,@min); % Minimum Z Surface
 %     figure; pcolor(xgi,ygi,val);
-% 
+%
 % Dependencies:
 %   - n/a
-% 
+%
 % Toolboxes Required:
 %   - n/a
-% 
-% Author        : Richie Slocum    
-% Email         : richie@cormorantanalytics.com    
-% Date Created  : 22-Jan-2016    
-% Date Modified : 22-Jan-2016    
+%
+% Author        : Richie Slocum
+% Email         : richie@cormorantanalytics.com
+% Date Created  : 22-Jan-2016
+% Date Modified : 22-Jan-2016
 % Github        : https://github.com/hokiespurs/general-purpose-matlab
 
 %% Check to make sure the last input is a valid function
@@ -87,10 +87,18 @@ Xind = calcInds(Xfilt,Xg);
 sizeXg = calcSize(Xg);
 N = numel(sizeXg);
 % squeeze and permute to flip so Z,Y,X to be X,Y,Z
-val = squeeze(permute(accumarray(Xind, I, sizeXg,fun,fun(nan)),N:-1:1));
+if nargin<8
+    val = squeeze(permute(accumarray(Xind, I, sizeXg,fun,fun(nan)),N:-1:1));
+else
+    val = squeeze(accumarray(Xind, I, sizeXg,fun,fun(nan)));
+end
 %% Output Number Of Points if user requests more than one output
 if nargout==2
-    numpts = squeeze(permute(accumarray(Xind, 1, sizeXg,@sum),N:-1:1));
+    if nargin<8
+        numpts = squeeze(permute(accumarray(Xind, 1, sizeXg,@sum),N:-1:1));
+    else
+        numpts = squeeze(accumarray(Xind, 1, sizeXg,@sum));
+    end
 else
     numpts=[];
 end
