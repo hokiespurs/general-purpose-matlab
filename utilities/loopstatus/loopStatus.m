@@ -47,11 +47,16 @@ if nargin==3
     nskip = 1; %default to output every loop
 end
 
-if nskip==0
-   nskip=1; % mod(n,0) = n ...this wont work
+if numel(nskip)>1
+    doprint = any(nskip==curLoopNum);
+else
+    if nskip==0
+        nskip=1; % mod(n,0) = n ...this wont work
+    end
+    doprint = mod(curLoopNum,nskip)==0;
 end
 
-if mod(curLoopNum,nskip)==0
+if doprint
     elapsedTime = now - startTime; %time it took for the first nLoops
     percentDone = curLoopNum/nLoops;
     
